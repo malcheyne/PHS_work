@@ -1,0 +1,9 @@
+"0","```r
+student <- c(\"Abigail\", \"Bjorn\", \"Caitlin\")
+age <- c(25, 56, 40)
+emails <- c(\"abigal12@company.co.uk\", \"bsmith@gmail.co.uk\", \"caitlin_1980\")
+
+student_info <- tibble(student, age, emails)
+
+student_info 
+```"

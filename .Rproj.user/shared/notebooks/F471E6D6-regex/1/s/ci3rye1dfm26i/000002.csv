@@ -1,0 +1,14 @@
+"0","```r
+strings
+```"
+"1","[1] \"This string has an_address@email.com in it\"                                 
+[2] \"This one has user.name@company.co.uk\"                                       
+[3] \"Now we've got other_person_123@server.net and my.name@runningoutofideas.com\"
+"
+"0","```r
+pattern <- \"[a-z]@\"
+strings %>% 
+  str_extract(pattern)
+```"
+"1","[1] \"s@\" \"e@\" \"e@\"
+"

@@ -1,0 +1,26 @@
+"0","```r
+codeclan <- \"CodeClan\"    # Finds the exact
+test_strings %>%
+  str_detect(codeclan)
+```"
+"1","[1]  TRUE  TRUE FALSE  TRUE
+"
+"0","```r
+caps <- \"[A-Z]{2}\"        # Finds 2 consecutive letter in UPPER CASE 
+test_strings %>%
+  str_detect(caps)
+```"
+"1","[1] FALSE FALSE  TRUE FALSE
+"
+"0","```r
+no_castle <- \"[cC]astle\"  # Finds castle with a UPPER or lower case
+test_strings %>%
+  str_detect(no_castle, negate = TRUE)  # Finds strings not including castle
+```"
+"1","[1]  TRUE FALSE  TRUE FALSE
+"
+"0","```r
+  !str_detect(test_strings, \"[cC]astle\")
+```"
+"1","[1]  TRUE FALSE  TRUE FALSE
+"

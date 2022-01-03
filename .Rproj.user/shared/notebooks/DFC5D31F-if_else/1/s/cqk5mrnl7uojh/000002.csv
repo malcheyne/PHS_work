@@ -1,0 +1,20 @@
+"0","```r
+x <- 2
+y <- 10
+
+if (x > y) {
+  print(\"Start of outer if block\")
+
+  if (x %% y == 0) {
+    print(\"Inner if block 1\")
+  }
+
+  if (y %in% c(1:5)) {
+    print(\"Inner if block 2\")
+  }
+
+  print(\"End of outer if block\")
+}
+
+print(\"After if statement\")
+```"

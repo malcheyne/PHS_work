@@ -1,0 +1,16 @@
+"0","```r
+test_strings %>% 
+  str_extract_all(\"^[a-z]$\")
+```"
+"1","[[1]]
+character(0)
+
+[[2]]
+character(0)
+
+[[3]]
+character(0)
+
+[[4]]
+[1] \"s\"
+"

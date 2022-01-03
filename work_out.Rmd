@@ -1,0 +1,47 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(janitor)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+
+admissions <- read_csv("data/PHS_admissions_age_and_sex.csv")
+```
+
+# Data Exploration and Cleaning
+
+```{r}
+glimpse(admissions)
+
+# HSCP is the region
+
+# Need to mutate week turning to a Date
+
+admissions_clean <- admissions %>%
+  clean_names() 
+
+admissions_clean <- admissions_clean %>%
+  mutate(week_ending = ymd(week_ending)) 
+```
+
+# Histogram of ICU Admissions
+
+```{r}
+admissions_clean %>%
+  filter(age_group != "All ages") %>%
+  select(week_ending, hscp, number_admissions) %>%
+  ggplot() +
+  aes(x = week_ending, y = number_admissions, col = hscp) +
+  geom_line()
+
+# It is only counting the number of admissions for the first HSCP from what I can tell. 
+```
+
+```{r}
+admissions_clean %>% 
+  
+```

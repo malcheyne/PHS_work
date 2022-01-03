@@ -1,0 +1,15 @@
+"0","```r
+# extract_name <- \"[A-Z]+a-z\"
+# lloyd %>% 
+#   str_extract(extract_name)
+
+extract_name <- \"[A-Z][a-z]+\"         # Upper case followed by all lower case 
+
+extracted <- lloyd %>%
+  str_extract_all(extract_name)
+
+extracted %>% 
+  flatten_chr()
+```"
+"1","[1] \"Colin\"  \"Mhairi\" \"Del\"    \"Aileen\" \"Steph\" 
+"

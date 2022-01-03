@@ -1,0 +1,8 @@
+"0","```r
+punct_strings <- c(
+  \"Why is this a question?\", 
+  \"I am a sentence with no punctation\",
+  \"I am a well punctuated sentence.\", 
+  \"WOW!\"
+)
+```"

@@ -1,0 +1,8 @@
+"0","```r
+if (condition) {
+  # code that runs if the condition is met
+}
+
+# there can be a space between the if ()
+# next thing should be placed on the next line
+```"

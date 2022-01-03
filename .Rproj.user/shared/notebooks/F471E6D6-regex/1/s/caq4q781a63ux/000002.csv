@@ -1,0 +1,4 @@
+"0","```r
+student_info %>% 
+  mutate(email_detect = str_detect(emails, \"[a-z0-9]+@\"))
+```"

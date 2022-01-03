@@ -1,0 +1,9 @@
+"0","```r
+invalid_email <-  \"@emailprovider.com\"
+pattern <- \"[a-z]+@emailprovider.com\"
+
+invalid_email %>% 
+  str_extract(pattern)
+```"
+"1","[1] NA
+"

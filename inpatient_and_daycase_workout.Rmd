@@ -1,0 +1,150 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(janitor)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+```
+
+
+```{r}
+#raw_staff_beds <- read_csv("data/beds_by_nhs_board_of_treatment_and_specialty.csv")
+raw_activity <- read_csv("data/inpatient_and_daycase_by_nhs_board_of_treatment_and_specialty.csv")
+```
+```{r}
+head(raw_activity)
+```
+
+```{r}
+activity <- raw_activity %>% 
+  clean_names() %>% 
+  # Create new column for quarters
+  mutate(q = str_sub(quarter, -2)) %>% 
+  # Change to date format
+  mutate(quarter = yq(quarter)) %>% 
+  # rename the columns above 
+  mutate(date = quarter,
+         quarter = q) %>% 
+  # Change Heath Board names to read better
+    # probly don't need
+  mutate(
+    hb = if_else(hb %in% "SB0801", "Golden Jubilee",
+                  if_else(hb %in% "S08000015", "Ayrshire & Arran",
+                  if_else(hb %in% "S08000016", "Borders",
+                  if_else(hb %in% "S08000017", "Dumfries & Galloway",
+                  if_else(hb %in% "S08000019", "Forth Valley",
+                  if_else(hb %in% "S08000020", "Grampian",
+                  if_else(hb %in% "S08000022", "Highland",
+                  if_else(hb %in% "S08000024", "Lothian",
+                  if_else(hb %in% "S08000025", "Orkney",
+                  if_else(hb %in% "S08000026", "Shetland",
+                  if_else(hb %in% "S08000028", "Western Isles",
+                  if_else(hb %in% "S08000029", "Fife",
+                  if_else(hb %in% "S08000030", "Tayside",
+                  if_else(hb %in% "S08000031", "Greater Glasgow & Clyde",
+                  if_else(hb %in% "S08000032", "Lanarkshire",
+                  if_else(hb %in% "S92000003", "Scotland", hb)
+                  )))))))))))))))) %>% 
+  # Change location names to take out dupitice
+  mutate(
+    location = if_else(location %in% "SB0801", "Golden Jubilee",
+                  if_else(location %in% "S08000015", "Ayrshire & Arran",
+                  if_else(location %in% "S08000016", "Borders",
+                  if_else(location %in% "S08000017", "Dumfries & Galloway",
+                  if_else(location %in% "S08000019", "Forth Valley",
+                  if_else(location %in% "S08000020", "Grampian",
+                  if_else(location %in% "S08000022", "Highland",
+                  if_else(location %in% "S08000024", "Lothian",
+                  if_else(location %in% "S08000025", "Orkney",
+                  if_else(location %in% "S08000026", "Shetland",
+                  if_else(location %in% "S08000028", "Western Isles",
+                  if_else(location %in% "S08000029", "Fife",
+                  if_else(location %in% "S08000030", "Tayside",
+                  if_else(location %in% "S08000031", "Greater Glasgow & Clyde",
+                  if_else(location %in% "S08000032", "Lanarkshire",
+                  if_else(location %in% "S92000003", "Scotland", NA_character_ 
+                        #  if_else(location %in% "^[A-Z0-9]{5}", , location)
+                        # couldn't get the Regex to work 
+                  ))))))))))))))))) %>% 
+  # filter out the na
+  filter(location != is.na(location)) %>% 
+  # take out unsed columns
+  select(date, quarter, hb, location, admission_type, 
+         specialty, specialty_name, episodes, 
+         length_of_episode, average_length_of_episode, 
+         spells, length_of_spell, average_length_of_spell)
+  
+activity 
+```
+```{r}
+activity %>% 
+  count(admission_type)
+```
+
+```{r}
+activity %>% 
+  filter(admission_type %in% "Emergency Inpatients") %>% 
+  count(specialty_name)
+```
+
+```{r}
+activity %>% 
+  filter(admission_type %in% "Elective Inpatients") %>% 
+  count(specialty_name)
+```
+
+
+
+
+```{r}
+
+activity %>%  
+  filter(hb %in% "Scotland",
+         admission_type %in% "Emergency Inpatients",
+         episodes > 3000) %>% 
+ # group_by(episodes) %>% 
+  ggplot(aes(x = quarter, y = episodes, col = specialty_name)) +
+  geom_point() +
+  geom_line()
+```
+Across scotland looks like we had a steddy incress in the General Medicine
+```{r}
+activity %>%  
+  filter(hb %in% "Scotland",
+         admission_type %in% "Emergency Inpatients",
+         specialty_name %in% "General Medicine") %>% 
+ # group_by(episodes) %>% 
+  ggplot(aes(x = quarter, y = episodes, col = specialty_name)) +
+  geom_point() +
+  geom_line()
+```
+
+
+```{r}
+activity %>%  
+  filter(hb %in% "Scotland",
+         admission_type %in% "Elective Inpatients") %>% 
+ # group_by(episodes) %>% 
+  ggplot(aes(x = quarter, y = episodes, col = specialty_name)) +
+  geom_point() +
+  geom_line()
+```
+Can 
+
+
+
+```{r}
+activity %>%  
+  filter(hb %in% "Scotland",
+         #admission_type %in% "Emergency Inpatients",
+         specialty_name %in% "General Medicine") %>% 
+ # group_by(episodes) %>% 
+  ggplot(aes(x = quarter, y = episodes, col = admission_type)) +
+  geom_point() +
+  geom_line()
+```
+

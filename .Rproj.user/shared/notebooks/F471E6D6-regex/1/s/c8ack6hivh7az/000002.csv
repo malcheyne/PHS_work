@@ -1,0 +1,7 @@
+"0","```r
+strings <- c(
+  \"This string has an_address@email.com in it\", 
+  \"This one has user.name@company.co.uk\", 
+  \"Now we've got other_person_123@server.net and my.name@runningoutofideas.com\"
+)
+```"

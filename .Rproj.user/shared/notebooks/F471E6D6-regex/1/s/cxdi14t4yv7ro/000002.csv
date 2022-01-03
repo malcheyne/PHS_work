@@ -1,0 +1,7 @@
+"0","```r
+pattern <- \"[a-zA-Z]\" # looking for CAPS and lower letters between A to Z
+strings %>% 
+  str_detect(pattern)
+```"
+"1","[1] TRUE TRUE TRUE TRUE TRUE
+"

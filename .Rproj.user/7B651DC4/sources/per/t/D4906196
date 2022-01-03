@@ -1,0 +1,28 @@
+{
+    "id": "D4906196",
+    "path": "~/Code/GitHub/PHS_work/inpatient_and_daycase_workout.Rmd",
+    "project_path": "inpatient_and_daycase_workout.Rmd",
+    "type": "r_markdown",
+    "hash": "1356024833",
+    "contents": "",
+    "dirty": false,
+    "created": 1641147840733.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "tempName": "Untitled1",
+        "chunk_output_type": "inline",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "62,64",
+        "scrollLine": "51"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1641157256,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1641157257001,
+    "read_only": false,
+    "read_only_alternatives": []
+}

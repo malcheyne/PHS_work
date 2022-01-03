@@ -1,0 +1,4 @@
+"0","```r
+single_string <- \"string a\"
+strings <- c(\"string a\", \"string b\", \"string c\", \"string d\", \"striiiiiiing e\")
+```"

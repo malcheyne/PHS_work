@@ -1,0 +1,9 @@
+"0","```r
+test <- \"THIS is a string\"
+pattern <- \"(?i)[a-z]\"   #\"[a-zA-Z]\"
+
+test %>% 
+  str_extract(pattern)
+```"
+"1","[1] \"T\"
+"

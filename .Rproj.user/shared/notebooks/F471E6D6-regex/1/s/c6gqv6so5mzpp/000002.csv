@@ -1,0 +1,7 @@
+"0","```r
+pattern <- \"[a-c]\" # in the [] dose it have \"a\" or \"b\" or \"c\"
+strings %>% 
+  str_detect(pattern)
+```"
+"1","[1]  TRUE  TRUE  TRUE FALSE FALSE
+"

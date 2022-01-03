@@ -1,0 +1,7 @@
+"0","```r
+pattern <- \"[a-z]\"
+strings %>% 
+  str_extract(pattern)
+```"
+"1","[1] \"h\" \"h\" \"o\"
+"

@@ -1,0 +1,8 @@
+"0","wranged_beds %>% "
+"0","  filter(specialty_name %in% c(""All Acute""),"
+"0","         hb %in% ""Scotland"") %>% "
+"0","  ggplot(aes(x = q, y = all_staffed_beds)) +"
+"0","  geom_point() +"
+"0","  geom_line(aes(y = ave(all_staffed_beds))) +"
+"0","  #geom_smooth(aes(fill = specialty_name, color = specialty_name))"
+"0","  geom_ribbon(aes(ymin = all_staffed_beds - 1, ymax = all_staffed_beds + 1), fill = ""grey70"", orientation = ""x"") "

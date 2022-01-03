@@ -1,0 +1,6 @@
+"0","```r
+strings %>% 
+  str_detect(patten)
+```"
+"1","[1]  TRUE FALSE FALSE FALSE FALSE
+"

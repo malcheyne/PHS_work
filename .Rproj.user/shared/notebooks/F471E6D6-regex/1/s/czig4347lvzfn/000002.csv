@@ -1,0 +1,14 @@
+"0","```r
+pattern <- \"[a-z0-9_\\.]+@[a-z0-9_\\.]+\" 
+strings %>% 
+  str_extract_all(pattern)
+```"
+"1","[[1]]
+[1] \"an_address@email.com\"
+
+[[2]]
+[1] \"user.name@company.co.uk\"
+
+[[3]]
+[1] \"other_person_123@server.net\"   \"my.name@runningoutofideas.com\"
+"

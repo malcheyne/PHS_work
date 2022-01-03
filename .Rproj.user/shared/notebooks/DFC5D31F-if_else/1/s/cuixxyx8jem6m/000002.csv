@@ -1,0 +1,11 @@
+"0","```r
+if (condition) {
+  # do something
+  
+  #calculate something
+  
+  #
+}
+
+#will always be executed as it's outside the if
+```"

@@ -1,0 +1,7 @@
+"0","```r
+punct_strings %>% 
+  str_extract_all(\"[A-Z]{3}[:punct:]\") %>% 
+  flatten_chr()
+```"
+"1","[1] \"WOW!\"
+"

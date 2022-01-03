@@ -1,0 +1,11 @@
+"0","```r
+test_strings <- c(\"Weâ€™re having great fun learning about 
+                  data analysis at CodeClan!\",
+                  \"CodeClan is at 37 Castle Terrace in 
+                  Edinburgh, ClockWise in Glasgow,
+                  and Wasps Academy in Inverness\",
+                  \"Our cohort code starts with DE, DG or D\",
+                  \"You get a great view of the castle or the 
+                  national conservatoire from just outside 
+                  CodeClanâ€™s door\")
+```"

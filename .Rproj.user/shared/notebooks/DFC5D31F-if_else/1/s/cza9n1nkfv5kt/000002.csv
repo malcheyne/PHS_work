@@ -1,0 +1,8 @@
+"0","```r
+if (rain) {
+  waer_wellies()
+} else {
+  wear_trainers()
+}
+# if it's raining wear wellies, otherwise wear trainers
+```"

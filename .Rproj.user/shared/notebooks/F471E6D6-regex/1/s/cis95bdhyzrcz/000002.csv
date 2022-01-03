@@ -1,0 +1,7 @@
+"0","```r
+pattern <- \"[A-Z]\" # looking for CAPS letters between A to Z
+strings %>% 
+  str_detect(pattern)
+```"
+"1","[1] FALSE FALSE FALSE FALSE FALSE
+"

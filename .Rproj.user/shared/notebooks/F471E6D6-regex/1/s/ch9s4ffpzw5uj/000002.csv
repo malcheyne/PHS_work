@@ -1,0 +1,10 @@
+"0","```r
+pattern <- \"[a-z0-9_\\.]+@[a-z0-9_\\.]+\"
+strings %>% 
+  str_extract(pattern)
+```"
+"1","[1] \"an_address@email.com\"        \"user.name@company.co.uk\"     \"other_person_123@server.net\"
+"
+"0","```r
+# \\. mean ingore . meaning everything just read it as a full stop
+```"

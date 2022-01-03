@@ -1,0 +1,7 @@
+"0","```r
+pattern <- \"[abc]\"
+strings %>% 
+  str_detect(pattern)
+```"
+"1","[1]  TRUE  TRUE  TRUE FALSE FALSE
+"

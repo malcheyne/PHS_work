@@ -1,0 +1,14 @@
+"0","```r
+pattern <- \"i{3}\" # find 3 consecutive letter i's (lowcase)
+strings %>% 
+  str_detect(pattern)
+```"
+"1","[1] FALSE FALSE FALSE FALSE  TRUE
+"
+"0","```r
+pattern <- \"i{3}\" # find 3 consecutive letter i's (lowcase)
+strings %>% 
+  str_detect(\"i{3}\")
+```"
+"1","[1] FALSE FALSE FALSE FALSE  TRUE
+"

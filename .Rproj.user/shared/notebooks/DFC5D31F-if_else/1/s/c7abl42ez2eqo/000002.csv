@@ -1,0 +1,7 @@
+"0","```r
+if (2 %in% 50:100) {
+  print(\"it's in the set\")
+} else {
+  print(\"it's not in the set\")
+}
+```"

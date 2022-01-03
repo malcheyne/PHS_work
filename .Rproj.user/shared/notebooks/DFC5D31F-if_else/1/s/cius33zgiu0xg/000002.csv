@@ -1,0 +1,7 @@
+"0","```r
+x <- 4
+
+if (x %% 2 == 0) {
+  print(\"Yes the divides by 2\")
+}
+```"

@@ -1,0 +1,4 @@
+"0","```r
+student_info %>% 
+  mutate(emails = str_extract(emails, \"[a-z0-9_\\.]+@[a-z\\.]+\"))
+```"
