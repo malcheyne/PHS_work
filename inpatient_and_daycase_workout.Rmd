@@ -107,7 +107,7 @@ activity %>%
          admission_type %in% "Emergency Inpatients",
          episodes > 3000) %>% 
  # group_by(episodes) %>% 
-  ggplot(aes(x = quarter, y = episodes, col = specialty_name)) +
+  ggplot(aes(x = date, y = episodes, col = specialty_name)) +
   geom_point() +
   geom_line()
 ```
@@ -118,7 +118,7 @@ activity %>%
          admission_type %in% "Emergency Inpatients",
          specialty_name %in% "General Medicine") %>% 
  # group_by(episodes) %>% 
-  ggplot(aes(x = quarter, y = episodes, col = specialty_name)) +
+  ggplot(aes(x = date, y = episodes, col = specialty_name)) +
   geom_point() +
   geom_line()
 ```
@@ -129,7 +129,7 @@ activity %>%
   filter(hb %in% "Scotland",
          admission_type %in% "Elective Inpatients") %>% 
  # group_by(episodes) %>% 
-  ggplot(aes(x = quarter, y = episodes, col = specialty_name)) +
+  ggplot(aes(x = date, y = episodes, col = specialty_name)) +
   geom_point() +
   geom_line()
 ```
@@ -141,9 +141,109 @@ Can
 activity %>%  
   filter(hb %in% "Scotland",
          #admission_type %in% "Emergency Inpatients",
-         specialty_name %in% "General Medicine") %>% 
+         specialty_name %in% "Intensive Care Medicine",
+         admission_type != "All Inpatients and Day cases",
+         admission_type != "Not Specified") %>% 
  # group_by(episodes) %>% 
-  ggplot(aes(x = quarter, y = episodes, col = admission_type)) +
+  ggplot(aes(x = date, y = episodes, col = admission_type)) +
+  geom_point() +
+  geom_line()
+```
+
+take out "All Inpatients and Day cases" & "Not Specified" as duplicating and not really any there       
+
+```{r}
+unique(activity$admission_type)
+```
+
+
+```{r}
+unique(activity$specialty_name)
+```
+
+
+
+```{r}
+
+
+activity %>%  
+  filter(hb %in% "Scotland",
+         admission_type %in% "Emergency Inpatients",
+         episodes > 3000) %>% 
+ # group_by(episodes) %>% 
+  ggplot(aes(x = date, y = episodes, col = specialty_name)) +
+  geom_point() +
+  geom_line()
+```
+
+```{r}
+bigest_type <- activity %>% 
+  filter(hb %in% "Scotland",
+         admission_type %in% "Emergency Inpatients") %>%
+  group_by(specialty_name) %>% 
+  summarise(count = sum(episodes)) %>% 
+  arrange(desc(count)) %>% 
+  head(1)
+
+bigest_type
+```
+```{r}
+activity %>% 
+  filter(hb %in% "Scotland",
+         admission_type %in% "Emergency Inpatients",
+         specialty_name != bigest_type$specialty_name) %>%
+  group_by(specialty_name) %>% 
+  summarise(count = sum(episodes)) %>% 
+  arrange(desc(count)) 
+
+
+```
+
+
+```{r}
+avg_specialty <- activity %>% 
+  filter(hb %in% "Scotland",
+         admission_type %in% "Emergency Inpatients",
+         specialty_name != bigest_type$specialty_name) %>%
+  group_by(date) %>% 
+  summarise(avg = mean(episodes)) 
+
+avg_specialty
+```
+
+
+```{r}
+activity %>% 
+  filter(hb %in% "Scotland",
+         admission_type %in% "Emergency Inpatients",
+         specialty_name == bigest_type$specialty_name) %>%
+  ggplot(aes(x = date, y = episodes)) +
+  geom_point() +
+  geom_line(col = "black") +
+  #geom_point(aes(x = avg_specialty$date, y = avg_specialty$avg, col = "red")) +
+  geom_line(aes(x = avg_specialty$date, y = avg_specialty$avg, col = "red"), size = 1.5)
+```
+
+
+```{r}
+bigest_avg <- activity %>% 
+  filter(hb %in% "Scotland",
+         admission_type %in% "Emergency Inpatients") %>%
+  group_by(specialty_name) %>% 
+  summarise(count = mean(episodes)) %>% 
+  arrange(desc(count)) %>% 
+  head(1)
+
+bigest_avg
+```
+
+```{r}
+activity %>%  
+  filter(hb %in% "Scotland",
+         admission_type %in% "Elective Inpatients",
+         filter()) %>% 
+ # group_by(episodes) %>% 
+  ggplot(aes(x = date, y = episodes, col = specialty_name)) +
   geom_point() +
   geom_line()
 ```

@@ -211,6 +211,12 @@ wranged_beds %>%
   
 ```
 
+use gg_sesoins
+take out the 
+find min/max and avg for each quarter
+
+
+
 https://www.rspatial.org/intr/12-plots.html
 Multiple plots
 
