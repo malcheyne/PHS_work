@@ -43,7 +43,7 @@ wranged_beds_no_gj <- raw_beds %>%
   # take out location names to take out duplicate
   filter(location_qf == "d") %>%
   
-  # Take out of cleaning script 
+  # Take out of cleaning script and add when pulling in shiny
   
   # take out Golden Jubilee
   filter(hb != is.na(hb)) %>%
@@ -186,6 +186,16 @@ wranged_beds_no_gj %>%
   theme(legend.position="none")
 ```
 
+```{r}
+wranged_beds_no_gj %>% 
+  filter(specialty_name %in% c("All Acute", "All Specialties"),
+         hb != "Scotland") %>%
+  ggplot(aes(x = date, y = percentage_occupancy, col = specialty_name)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~ hb) +
+  theme(legend.position="none")
+```
 
 
 
@@ -224,6 +234,10 @@ activity_no_gj <- raw_activity %>%
                   ))))))))))))))) %>% 
   # take out location names to take out duplicate
   filter(location_qf == "d") %>% 
+  
+  # Take out of cleaning script and add when pulling in shiny
+  
+  
   # take out Golden Jubilee
   filter(hb != is.na(hb)) %>%
   # take out unsed columns
@@ -307,7 +321,11 @@ activity_no_gj %>%
   geom_line()
 ```
 
-Can show 
+Can show by regions brake down 
+
+### Tayside had a larger bump in Emergency Inpatients durung the pandemic  "Infectious Diseases"
+
+
 
 ```{r}
 activity_no_gj %>%  
@@ -325,6 +343,32 @@ activity_no_gj %>%
 
 
 
+
+```{r}
+activity_no_gj %>%  
+  filter(hb != "Scotland",
+         specialty_name %in% "General Surgery",
+         admission_type %in% c("Elective Inpatients", 
+                               "Emergency Inpatients", 
+                               "Transfers")) %>% 
+  ggplot(aes(x = date, y = episodes, col = admission_type)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~ hb) +
+  theme(legend.position="none")
+```
+
+"Endocrinology & Diabetes"
+"Emergency Inpatients"
+   fife has a large ingress then decrees
+   Lothian is very seasonal summer 
+   
+"Medical Oncology
+  Much be three areas of treatment
+  Greater Glasgow & Clyde similar Elective Inpatients, Emergency Inpatients 
+  Grampian 
+  Lothian high amount
+
 ```{r}
 unique(activity_no_gj$admission_type)
 ```
@@ -334,5 +378,8 @@ unique(activity_no_gj$admission_type)
 unique(activity_no_gj$specialty_name)
 ```
 
+```{r}
+unique(activity_no_gj$hb)
+```
 
 
