@@ -1,0 +1,173 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(janitor)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+
+raw_beds <- read_csv("data/beds_by_nhs_board_of_treatment_and_specialty.csv")
+```
+
+
+```{r}
+wranged_beds_no_gj <- raw_beds %>% 
+  clean_names() %>% 
+  mutate(q = str_sub(quarter, -2)) %>% 
+  # Change to date format
+  mutate(quarter = yq(quarter)) %>% 
+  # rename the columns above 
+  mutate(date = quarter,
+         quarter = q) %>% 
+  # Change Heath Board names to read better
+  mutate(hb = if_else(hb %in% "S08000015", "Ayrshire & Arran",
+                      if_else(hb %in% "S08000016", "Borders",
+                      if_else(hb %in% "S08000017", "Dumfries & Galloway",
+                      if_else(hb %in% "S08000019", "Forth Valley",
+                      if_else(hb %in% "S08000020", "Grampian",
+                      if_else(hb %in% "S08000022", "Highland",
+                      if_else(hb %in% "S08000024", "Lothian",
+                      if_else(hb %in% "S08000025", "Orkney",
+                      if_else(hb %in% "S08000026", "Shetland",
+                      if_else(hb %in% "S08000028", "Western Isles",
+                      if_else(hb %in% "S08000029", "Fife",
+                      if_else(hb %in% "S08000030", "Tayside",
+                      if_else(hb %in% "S08000031", "Greater Glasgow & Clyde",
+                      if_else(hb %in% "S08000032", "Lanarkshire",
+                      if_else(hb %in% "S92000003", "Scotland", NA_character_)
+                      ))))))))))))))) %>% 
+  # take out location names to take out duplicate
+  filter(location_qf == "d") %>%
+  # take out Golden Jubilee
+  filter(hb != is.na(hb)) %>%
+  # take out unused columns
+  # take out location to remove duplicate
+  select(date, quarter, hb, specialty_name, all_staffed_beds, 
+         total_occupied_beds, average_available_staffed_beds,
+         average_occupied_beds, percentage_occupancy)
+  
+wranged_beds_no_gj
+```
+
+### KPI: Capacity – what is happening to the number of beds over the period? Perhaps think about the specialities these are if there has been specific variation?
+
+
+Shows the percentage occupancy per Specialty grouping
+
+```{r}
+wranged_beds_no_gj %>% 
+  filter(str_detect(specialty_name, " Grouping"),
+         specialty_name != "Other Grouping",
+         hb == "Scotland") %>% 
+  mutate(specialty_name = str_sub(specialty_name, start = 1, end = -9)) %>%
+  ggplot(aes(x = date, y = percentage_occupancy, col = specialty_name)) +
+  geom_point() +
+  geom_line()
+```
+Obstetrics and Dental look odd as they have 100% occupancy some of the time
+
+```{r}
+bigest_occupancy <- wranged_beds_no_gj %>% 
+  filter(str_detect(specialty_name, " Grouping"),
+         specialty_name != "Other Grouping",
+         specialty_name != "Obstetrics Grouping",
+         specialty_name != "Dental Grouping",
+         hb == "Scotland") %>% 
+  group_by(specialty_name) %>% 
+  summarise(count = sum(percentage_occupancy)) %>% 
+  arrange(desc(count)) %>% 
+  head(3)
+
+wranged_beds_no_gj %>% 
+  filter(specialty_name %in% c(bigest_occupancy$specialty_name)) %>%
+  filter(str_detect(specialty_name, " Grouping"),
+         specialty_name != "Other Grouping",
+         hb == "Scotland") %>% 
+  mutate(specialty_name = str_sub(specialty_name, start = 1, end = -9)) %>%
+  ggplot(aes(x = date, y = percentage_occupancy, col = specialty_name)) +
+  geom_point() +
+  geom_line()
+```
+
+
+Can use for shiny changing the specialty_name.
+
+shows remote areas don't need/uses some services so have belive have less can over lay the number total_occupied_beds at high point to give scale
+
+
+```{r}
+wranged_beds_no_gj %>% 
+  filter(str_detect(specialty_name, " Grouping"),
+         specialty_name != "Other Grouping",
+         specialty_name == "Emergency Grouping") %>% 
+  mutate(specialty_name = str_sub(specialty_name, start = 1, end = -9)) %>%
+  ggplot(aes(x = date, y = percentage_occupancy, col = hb)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~ hb) +
+  theme(legend.position="none")
+```
+
+
+## seasonal trends for staffed beds in the top 3 specialty
+
+Have taken the top 3 to show for ease
+
+```{r}
+bigest_specialty <- wranged_beds_no_gj %>% 
+  filter(str_detect(specialty_name, " Grouping"),
+         specialty_name != "Other Grouping",
+         hb == "Scotland") %>% 
+  group_by(specialty_name) %>% 
+  summarise(count = sum(all_staffed_beds)) %>% 
+  arrange(desc(count)) %>% 
+  head(3)
+
+
+wranged_beds_no_gj %>% 
+  filter(specialty_name %in% c(bigest_specialty$specialty_name)) %>% 
+  filter(str_detect(specialty_name, " Grouping"),
+         specialty_name != "Other Grouping",
+         hb == "Scotland") %>% 
+  mutate(specialty_name = str_sub(specialty_name, start = 1, end = -9)) %>%
+  ggplot(aes(x = date, y = all_staffed_beds, col = specialty_name)) +
+  geom_point() +
+  geom_line()
+```
+
+
+
+```{r}
+wranged_beds_no_gj %>% 
+  filter(specialty_name %in% c("All Acute", "All Specialties"),
+         hb %in% "Scotland") %>% 
+  ggplot(aes(x = date, y = percentage_occupancy, col = specialty_name)) +
+  geom_point() +
+  geom_line()
+```
+
+```{r}
+wranged_beds_no_gj %>% 
+  filter(specialty_name %in% c("All Acute", "All Specialties"),
+         hb %in% "Scotland") %>% 
+  ggplot(aes(x = date, y = all_staffed_beds, col = specialty_name)) +
+  geom_point() +
+  geom_line()
+```
+
+Shows Glasgow is the hub for most 
+
+```{r}
+wranged_beds_no_gj %>% 
+  filter(specialty_name %in% c("All Acute", "All Specialties"),
+         hb != "Scotland") %>%
+  ggplot(aes(x = date, y = all_staffed_beds, col = specialty_name)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~ hb) +
+  theme(legend.position="none")
+```

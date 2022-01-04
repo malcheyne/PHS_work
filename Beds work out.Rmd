@@ -4,6 +4,11 @@ output: html_notebook
 ---
 
 ```{r}
+library(feasts)
+```
+
+
+```{r}
 library(janitor)
 library(tidyverse)
 library(lubridate)
@@ -17,7 +22,7 @@ glimpse(raw_beds)
 ```
 
 ```{r}
-wranged_beds <- raw_beds %>% 
+wranged_beds_no_gj <- raw_beds %>% 
   clean_names() %>% 
   mutate(q = str_sub(quarter, -2)) %>% 
   # Change to date format
@@ -26,7 +31,46 @@ wranged_beds <- raw_beds %>%
   mutate(date = quarter,
          quarter = q) %>% 
   # Change Heath Board names to read better
-    # probly don'tneed
+  mutate(hb = if_else(hb %in% "S08000015", "Ayrshire & Arran",
+                      if_else(hb %in% "S08000016", "Borders",
+                      if_else(hb %in% "S08000017", "Dumfries & Galloway",
+                      if_else(hb %in% "S08000019", "Forth Valley",
+                      if_else(hb %in% "S08000020", "Grampian",
+                      if_else(hb %in% "S08000022", "Highland",
+                      if_else(hb %in% "S08000024", "Lothian",
+                      if_else(hb %in% "S08000025", "Orkney",
+                      if_else(hb %in% "S08000026", "Shetland",
+                      if_else(hb %in% "S08000028", "Western Isles",
+                      if_else(hb %in% "S08000029", "Fife",
+                      if_else(hb %in% "S08000030", "Tayside",
+                      if_else(hb %in% "S08000031", "Greater Glasgow & Clyde",
+                      if_else(hb %in% "S08000032", "Lanarkshire",
+                      if_else(hb %in% "S92000003", "Scotland", NA_character_)
+                      ))))))))))))))) %>% 
+  # take out location names to take out duplicate
+  filter(location_qf == "d") %>%
+  # take out Golden Jubilee
+  filter(hb != is.na(hb)) %>%
+  # take out unused columns
+  # take out location to remove duplicate
+  select(date, quarter, hb, specialty_name, all_staffed_beds, 
+         total_occupied_beds, average_available_staffed_beds,
+         average_occupied_beds, percentage_occupancy)
+  
+wranged_beds_no_gj
+```
+
+
+```{r}
+wranged_beds_with_gj <- raw_beds %>% 
+  clean_names() %>% 
+  mutate(q = str_sub(quarter, -2)) %>% 
+  # Change to date format
+  mutate(quarter = yq(quarter)) %>% 
+  # rename the columns above 
+  mutate(date = quarter,
+         quarter = q) %>% 
+  # Change Heath Board names to read better
   mutate(hb = if_else(hb %in% "SB0801", "Golden Jubilee",
                       if_else(hb %in% "S08000015", "Ayrshire & Arran",
                       if_else(hb %in% "S08000016", "Borders",
@@ -44,33 +88,74 @@ wranged_beds <- raw_beds %>%
                       if_else(hb %in% "S08000032", "Lanarkshire",
                       if_else(hb %in% "S92000003", "Scotland", hb)
                       )))))))))))))))) %>% 
-  # Change location names to take out dupitice
-  mutate(
-    location = if_else(location %in% "SB0801", "Golden Jubilee",
-                  if_else(location %in% "S08000015", "Ayrshire & Arran",
-                  if_else(location %in% "S08000016", "Borders",
-                  if_else(location %in% "S08000017", "Dumfries & Galloway",
-                  if_else(location %in% "S08000019", "Forth Valley",
-                  if_else(location %in% "S08000020", "Grampian",
-                  if_else(location %in% "S08000022", "Highland",
-                  if_else(location %in% "S08000024", "Lothian",
-                  if_else(location %in% "S08000025", "Orkney",
-                  if_else(location %in% "S08000026", "Shetland",
-                  if_else(location %in% "S08000028", "Western Isles",
-                  if_else(location %in% "S08000029", "Fife",
-                  if_else(location %in% "S08000030", "Tayside",
-                  if_else(location %in% "S08000031", "Greater Glasgow & Clyde",
-                  if_else(location %in% "S08000032", "Lanarkshire",
-                  if_else(location %in% "S92000003", "Scotland", NA_character_ 
-                  ))))))))))))))))) %>% 
-  filter(location != is.na(location)) %>% 
+  # take out location names to take out duplicate
+  filter(location_qf == "d") %>% 
   # take out unused columns
   # take out location to remove duplicate
   select(date, quarter, hb, specialty_name, all_staffed_beds, 
          total_occupied_beds, average_available_staffed_beds,
          average_occupied_beds, percentage_occupancy)
   
-wranged_beds 
+wranged_beds_with_gj
+```
+
+
+```{r}
+# wranged_beds <- raw_beds %>% 
+#   clean_names() %>% 
+#   mutate(q = str_sub(quarter, -2)) %>% 
+#   # Change to date format
+#   mutate(quarter = yq(quarter)) %>% 
+#   # rename the columns above 
+#   mutate(date = quarter,
+#          quarter = q) %>% 
+#   # Change Heath Board names to read better
+#     # probly don'tneed
+#   mutate(hb = if_else(hb %in% "SB0801", "Golden Jubilee",
+#                       if_else(hb %in% "S08000015", "Ayrshire & Arran",
+#                       if_else(hb %in% "S08000016", "Borders",
+#                       if_else(hb %in% "S08000017", "Dumfries & Galloway",
+#                       if_else(hb %in% "S08000019", "Forth Valley",
+#                       if_else(hb %in% "S08000020", "Grampian",
+#                       if_else(hb %in% "S08000022", "Highland",
+#                       if_else(hb %in% "S08000024", "Lothian",
+#                       if_else(hb %in% "S08000025", "Orkney",
+#                       if_else(hb %in% "S08000026", "Shetland",
+#                       if_else(hb %in% "S08000028", "Western Isles",
+#                       if_else(hb %in% "S08000029", "Fife",
+#                       if_else(hb %in% "S08000030", "Tayside",
+#                       if_else(hb %in% "S08000031", "Greater Glasgow & Clyde",
+#                       if_else(hb %in% "S08000032", "Lanarkshire",
+#                       if_else(hb %in% "S92000003", "Scotland", hb)
+#                       )))))))))))))))) %>% 
+#   # Change location names to take out dupitice
+#   filter(location_qf == "d") %>% 
+#   # mutate(
+#   #   location = if_else(location %in% "SB0801", "Golden Jubilee",
+#   #                 if_else(location %in% "S08000015", "Ayrshire & Arran",
+#   #                 if_else(location %in% "S08000016", "Borders",
+#   #                 if_else(location %in% "S08000017", "Dumfries & Galloway",
+#   #                 if_else(location %in% "S08000019", "Forth Valley",
+#   #                 if_else(location %in% "S08000020", "Grampian",
+#   #                 if_else(location %in% "S08000022", "Highland",
+#   #                 if_else(location %in% "S08000024", "Lothian",
+#   #                 if_else(location %in% "S08000025", "Orkney",
+#   #                 if_else(location %in% "S08000026", "Shetland",
+#   #                 if_else(location %in% "S08000028", "Western Isles",
+#   #                 if_else(location %in% "S08000029", "Fife",
+#   #                 if_else(location %in% "S08000030", "Tayside",
+#   #                 if_else(location %in% "S08000031", "Greater Glasgow & Clyde",
+#   #                 if_else(location %in% "S08000032", "Lanarkshire",
+#   #                 if_else(location %in% "S92000003", "Scotland", NA_character_ 
+#   #                 ))))))))))))))))) %>% 
+#   # filter(location != is.na(location)) %>% 
+#   # take out unused columns
+#   # take out location to remove duplicate
+#   select(date, quarter, hb, specialty_name, all_staffed_beds, 
+#          total_occupied_beds, average_available_staffed_beds,
+#          average_occupied_beds, percentage_occupancy)
+#   
+# wranged_beds 
 ```
 
 ```{r}
@@ -87,21 +172,113 @@ wranged_beds
 
 
 ```{r}
-wranged_beds %>% 
+wranged_beds_no_gj %>% 
   count(hb)
 
-wranged_beds %>% 
+wranged_beds_no_gj %>% 
+  filter(str_detect(specialty_name, " Grouping")) %>% 
   count(specialty_name)
 
-wranged_beds %>% 
-  count(location)
+# wranged_beds_with_gj %>% 
+#   count(location)
 ```
 
 ```{r}
-wranged_beds %>% 
-  # select(quarter, hb, specialty_name, all_staffed_beds, 
-  #        total_occupied_beds, average_available_staffed_beds,
-  #        average_occupied_beds, percentage_occupancy) %>% 
+wranged_beds_no_gj %>% 
+  filter(str_detect(specialty_name, " Grouping"),
+         specialty_name != "Other Grouping",
+         hb != "Scotland") %>% 
+  mutate(specialty_name = str_sub(specialty_name, start = 1, end = -9)) %>%
+  ggplot(aes(x = date, y = percentage_occupancy, col = specialty_name)) +
+  geom_point() +
+  geom_line()+
+  facet_wrap(~ hb)
+```
+
+```{r}
+wranged_beds_no_gj %>% 
+  filter(str_detect(specialty_name, " Grouping"),
+         specialty_name != "Other Grouping",
+         hb == "Scotland") %>% 
+  mutate(specialty_name = str_sub(specialty_name, start = 1, end = -9)) %>%
+  ggplot(aes(x = date, y = percentage_occupancy, col = specialty_name)) +
+  geom_point() +
+  geom_line()
+```
+
+```{r}
+wranged_beds_no_gj %>% 
+  filter(hb == "Scotland",
+         specialty_name == "Obstetrics Grouping")
+```
+
+```{r}
+wranged_beds_no_gj %>% 
+  filter(hb == "Scotland",
+         specialty_name == "Dental Grouping")
+```
+
+
+```{r}
+unique(wranged_beds_no_gj$specialty_name)
+```
+
+```{r}
+wranged_beds_no_gj_q <- raw_beds %>% 
+  clean_names() %>% 
+  # (q = str_sub(quarter, -2)) %>% 
+  # Change to date format
+  mutate(quarter = yq(quarter)) %>% 
+  # rename the columns above 
+  mutate(date = quarter
+         # ,
+         # quarter = q
+         ) %>%
+  # Change Heath Board names to read better
+  mutate(hb = if_else(hb %in% "S08000015", "Ayrshire & Arran",
+                      if_else(hb %in% "S08000016", "Borders",
+                      if_else(hb %in% "S08000017", "Dumfries & Galloway",
+                      if_else(hb %in% "S08000019", "Forth Valley",
+                      if_else(hb %in% "S08000020", "Grampian",
+                      if_else(hb %in% "S08000022", "Highland",
+                      if_else(hb %in% "S08000024", "Lothian",
+                      if_else(hb %in% "S08000025", "Orkney",
+                      if_else(hb %in% "S08000026", "Shetland",
+                      if_else(hb %in% "S08000028", "Western Isles",
+                      if_else(hb %in% "S08000029", "Fife",
+                      if_else(hb %in% "S08000030", "Tayside",
+                      if_else(hb %in% "S08000031", "Greater Glasgow & Clyde",
+                      if_else(hb %in% "S08000032", "Lanarkshire",
+                      if_else(hb %in% "S92000003", "Scotland", NA_character_)
+                      ))))))))))))))) %>% 
+  # take out location names to take out duplicate
+  filter(location_qf == "d") %>%
+  # take out Golden Jubilee
+  filter(hb != is.na(hb)) %>%
+  # take out unused columns
+  # take out location to remove duplicate
+  select(date,  hb, specialty_name, all_staffed_beds, 
+         total_occupied_beds, average_available_staffed_beds,
+         average_occupied_beds, percentage_occupancy)
+  
+wranged_beds_no_gj_q
+```
+quarter,
+
+```{r}
+wranged_beds_no_gj_q %>% 
+  filter(str_detect(specialty_name, " Grouping"),
+         specialty_name != "Other Grouping",
+         hb %in% "Scotland",
+         specialty_name == "Emergency Grouping") %>%
+  mutate(specialty_name = str_sub(specialty_name, start = 1, end = -9)) %>%
+  as_tsibble(index = date) %>%
+  gg_season(percentage_occupancy)
+```
+
+
+```{r}
+wranged_beds_no_gj %>% 
   filter(specialty_name %in% "All Acute") %>% 
   ggplot(aes(x = date, y = percentage_occupancy, col = hb)) +
   geom_point() +
@@ -111,10 +288,7 @@ wranged_beds %>%
 ```
 
 ```{r}
-wranged_beds %>% 
-  # select(quarter, hb, specialty_name, all_staffed_beds, 
-  #        total_occupied_beds, average_available_staffed_beds,
-  #        average_occupied_beds, percentage_occupancy) %>% 
+wranged_beds_no_gj %>% 
   filter(specialty_name %in% "All Specialties") %>% 
   ggplot(aes(x = date, y = percentage_occupancy, col = hb)) +
   geom_point() +
@@ -124,7 +298,7 @@ wranged_beds %>%
 ```
 
 ```{r}
-wranged_beds %>% 
+wranged_beds_no_gj %>% 
   filter(specialty_name %in% c("All Acute", "All Specialties"),
          hb %in% "Scotland") %>% 
   ggplot(aes(x = date, y = percentage_occupancy, col = specialty_name)) +
@@ -133,7 +307,7 @@ wranged_beds %>%
 ```
 
 ```{r}
-wranged_beds %>% 
+wranged_beds_no_gj %>% 
   filter(specialty_name %in% c("All Acute", "All Specialties"),
          hb %in% "Scotland") %>% 
   ggplot(aes(x = date, y = all_staffed_beds, col = specialty_name)) +
@@ -150,7 +324,7 @@ raw_beds %>%
 ```
 
 ```{r}
-wranged_beds %>% 
+wranged_beds_no_gj %>% 
   filter(specialty_name %in% c("All Acute", "All Specialties"),
          hb != "Scotland",
          hb != "Golden Jubilee") %>%
@@ -200,7 +374,7 @@ wranged_beds %>%
 
 
 ```{r}
-wranged_beds %>% 
+wranged_beds_no_gj %>% 
   filter(specialty_name %in% c("All Acute"),
          hb %in% "Scotland") %>% 
   ggplot(aes(x = quarter, y = all_staffed_beds)) +

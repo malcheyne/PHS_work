@@ -30,6 +30,90 @@ activity <- raw_activity %>%
   mutate(date = quarter,
          quarter = q) %>% 
   # Change Heath Board names to read better
+  mutate(
+    hb = if_else(hb %in% "SB0801", "Golden Jubilee",
+                  if_else(hb %in% "S08000015", "Ayrshire & Arran",
+                  if_else(hb %in% "S08000016", "Borders",
+                  if_else(hb %in% "S08000017", "Dumfries & Galloway",
+                  if_else(hb %in% "S08000019", "Forth Valley",
+                  if_else(hb %in% "S08000020", "Grampian",
+                  if_else(hb %in% "S08000022", "Highland",
+                  if_else(hb %in% "S08000024", "Lothian",
+                  if_else(hb %in% "S08000025", "Orkney",
+                  if_else(hb %in% "S08000026", "Shetland",
+                  if_else(hb %in% "S08000028", "Western Isles",
+                  if_else(hb %in% "S08000029", "Fife",
+                  if_else(hb %in% "S08000030", "Tayside",
+                  if_else(hb %in% "S08000031", "Greater Glasgow & Clyde",
+                  if_else(hb %in% "S08000032", "Lanarkshire",
+                  if_else(hb %in% "S92000003", "Scotland", hb)
+                  )))))))))))))))) %>% 
+  # take out location names to take out duplicate
+  filter(location_qf == "d") %>% 
+  # take out unsed columns
+  select(date, quarter, hb, location, admission_type, 
+         specialty, specialty_name, episodes, 
+         length_of_episode, average_length_of_episode, 
+         spells, length_of_spell, average_length_of_spell)
+  
+activity 
+```
+
+
+```{r}
+activity_no_gj <- raw_activity %>% 
+  clean_names() %>% 
+  # Create new column for quarters
+  mutate(q = str_sub(quarter, -2)) %>% 
+  # Change to date format
+  mutate(quarter = yq(quarter)) %>% 
+  # rename the columns above 
+  mutate(date = quarter,
+         quarter = q) %>% 
+  # Change Heath Board names to read better
+  mutate(
+    hb = 
+                  if_else(hb %in% "S08000015", "Ayrshire & Arran",
+                  if_else(hb %in% "S08000016", "Borders",
+                  if_else(hb %in% "S08000017", "Dumfries & Galloway",
+                  if_else(hb %in% "S08000019", "Forth Valley",
+                  if_else(hb %in% "S08000020", "Grampian",
+                  if_else(hb %in% "S08000022", "Highland",
+                  if_else(hb %in% "S08000024", "Lothian",
+                  if_else(hb %in% "S08000025", "Orkney",
+                  if_else(hb %in% "S08000026", "Shetland",
+                  if_else(hb %in% "S08000028", "Western Isles",
+                  if_else(hb %in% "S08000029", "Fife",
+                  if_else(hb %in% "S08000030", "Tayside",
+                  if_else(hb %in% "S08000031", "Greater Glasgow & Clyde",
+                  if_else(hb %in% "S08000032", "Lanarkshire",
+                  if_else(hb %in% "S92000003", "Scotland", NA_character_)
+                  ))))))))))))))) %>% 
+  # take out location names to take out duplicate
+  filter(location_qf == "d") %>% 
+  # take out Golden Jubilee
+  filter(hb != is.na(hb)) %>%
+  # take out unsed columns
+  select(date, quarter, hb, location, admission_type, 
+         specialty, specialty_name, episodes, 
+         length_of_episode, average_length_of_episode, 
+         spells, length_of_spell, average_length_of_spell)
+  
+activity_no_gj 
+```
+
+
+```{r}
+activity2 <- raw_activity %>% 
+  clean_names() %>% 
+  # Create new column for quarters
+  mutate(q = str_sub(quarter, -2)) %>% 
+  # Change to date format
+  mutate(quarter = yq(quarter)) %>% 
+  # rename the columns above 
+  mutate(date = quarter,
+         quarter = q) %>% 
+  # Change Heath Board names to read better
     # probly don't need
   mutate(
     hb = if_else(hb %in% "SB0801", "Golden Jubilee",
@@ -78,12 +162,35 @@ activity <- raw_activity %>%
          length_of_episode, average_length_of_episode, 
          spells, length_of_spell, average_length_of_spell)
   
-activity 
+activity2 
 ```
+
+```{r}
+library(compare)
+```
+
+
+
+```{r}
+comparison <- compare(activity,activity2, equal = FALSE)
+comparison$tM
+```
+
+
+```{r}
+
+```
+
+
 ```{r}
 activity %>% 
   count(admission_type)
 ```
+```{r}
+activity_no_gj%>% 
+  count(admission_type)
+```
+
 
 ```{r}
 activity %>% 
@@ -102,7 +209,7 @@ activity %>%
 
 ```{r}
 
-activity %>%  
+activity_no_gj %>%  
   filter(hb %in% "Scotland",
          admission_type %in% "Emergency Inpatients",
          episodes > 3000) %>% 
@@ -113,7 +220,7 @@ activity %>%
 ```
 Across scotland looks like we had a steddy incress in the General Medicine
 ```{r}
-activity %>%  
+activity_no_gj %>%  
   filter(hb %in% "Scotland",
          admission_type %in% "Emergency Inpatients",
          specialty_name %in% "General Medicine") %>% 
@@ -125,26 +232,23 @@ activity %>%
 
 
 ```{r}
-activity %>%  
+activity_no_gj %>%  
   filter(hb %in% "Scotland",
-         admission_type %in% "Elective Inpatients") %>% 
- # group_by(episodes) %>% 
+         admission_type %in% "Elective Inpatients") %>%
   ggplot(aes(x = date, y = episodes, col = specialty_name)) +
   geom_point() +
   geom_line()
 ```
 Can 
 
-
+This shows where 
 
 ```{r}
-activity %>%  
+activity_no_gj %>%  
   filter(hb %in% "Scotland",
-         #admission_type %in% "Emergency Inpatients",
          specialty_name %in% "Intensive Care Medicine",
          admission_type != "All Inpatients and Day cases",
          admission_type != "Not Specified") %>% 
- # group_by(episodes) %>% 
   ggplot(aes(x = date, y = episodes, col = admission_type)) +
   geom_point() +
   geom_line()
@@ -152,13 +256,47 @@ activity %>%
 
 take out "All Inpatients and Day cases" & "Not Specified" as duplicating and not really any there       
 
+### Admission by specialty
+
+Better can shiny this one and pick the specialty_name
+
+#### KPI: Do people have longer lengths of stay from elective or emergency admissions?
+
+### KPI: The whole system: from what’s coming through the front door in A&E and then how it filters through; how many emergency admissions are there, how many electives, how does this impact the lengths of stay people have in hospital?
+
 ```{r}
-unique(activity$admission_type)
+activity_no_gj %>%  
+  filter(hb %in% "Scotland",
+         specialty_name %in% "Infectious Diseases",
+         admission_type %in% c("Elective Inpatients", 
+                               "Emergency Inpatients", 
+                               "Transfers")) %>% 
+  ggplot(aes(x = date, y = episodes, col = admission_type)) +
+  geom_point() +
+  geom_line()
 ```
 
 
 ```{r}
-unique(activity$specialty_name)
+activity_no_gj %>%  
+  filter(hb %in% "Scotland",
+         specialty_name %in% "Infectious Diseases",
+         admission_type %in% c("Elective Inpatients", 
+                               "Emergency Inpatients", 
+                               "Transfers")) %>% 
+  ggplot(aes(x = date, y = spells, col = admission_type)) +
+  geom_point() +
+  geom_line()
+```
+
+
+```{r}
+unique(activity_no_gj$admission_type)
+```
+
+
+```{r}
+unique(activity_no_gj$specialty_name)
 ```
 
 
@@ -166,7 +304,7 @@ unique(activity$specialty_name)
 ```{r}
 
 
-activity %>%  
+activity_no_gj %>%  
   filter(hb %in% "Scotland",
          admission_type %in% "Emergency Inpatients",
          episodes > 3000) %>% 
@@ -177,7 +315,7 @@ activity %>%
 ```
 
 ```{r}
-bigest_type <- activity %>% 
+bigest_type <- activity_no_gj %>% 
   filter(hb %in% "Scotland",
          admission_type %in% "Emergency Inpatients") %>%
   group_by(specialty_name) %>% 
@@ -188,7 +326,7 @@ bigest_type <- activity %>%
 bigest_type
 ```
 ```{r}
-activity %>% 
+activity_no_gj %>% 
   filter(hb %in% "Scotland",
          admission_type %in% "Emergency Inpatients",
          specialty_name != bigest_type$specialty_name) %>%
@@ -201,7 +339,7 @@ activity %>%
 
 
 ```{r}
-avg_specialty <- activity %>% 
+avg_specialty <- activity_no_gj %>% 
   filter(hb %in% "Scotland",
          admission_type %in% "Emergency Inpatients",
          specialty_name != bigest_type$specialty_name) %>%
@@ -213,7 +351,7 @@ avg_specialty
 
 
 ```{r}
-activity %>% 
+activity_no_gj %>% 
   filter(hb %in% "Scotland",
          admission_type %in% "Emergency Inpatients",
          specialty_name == bigest_type$specialty_name) %>%
@@ -226,7 +364,7 @@ activity %>%
 
 
 ```{r}
-bigest_avg <- activity %>% 
+bigest_avg <- activity_no_gj %>% 
   filter(hb %in% "Scotland",
          admission_type %in% "Emergency Inpatients") %>%
   group_by(specialty_name) %>% 
@@ -238,7 +376,7 @@ bigest_avg
 ```
 
 ```{r}
-activity %>%  
+activity_no_gj %>%  
   filter(hb %in% "Scotland",
          admission_type %in% "Elective Inpatients",
          filter()) %>% 
@@ -246,5 +384,10 @@ activity %>%
   ggplot(aes(x = date, y = episodes, col = specialty_name)) +
   geom_point() +
   geom_line()
+```
+
+
+```{r}
+
 ```
 
