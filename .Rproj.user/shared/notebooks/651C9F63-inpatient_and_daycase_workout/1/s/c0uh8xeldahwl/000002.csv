@@ -1,3 +1,0 @@
-"0","activity %>% "
-"0","  filter(admission_type %in% ""Elective Inpatients"") %>% "
-"0","  count(specialty_name)"

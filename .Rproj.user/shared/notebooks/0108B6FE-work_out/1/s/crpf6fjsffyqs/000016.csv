@@ -1,6 +1,0 @@
-"0","admissions_clean %>%"
-"0","  filter(age_group != ""All ages"") %>%"
-"0","  select(week_ending, hscp, number_admissions) %>%"
-"0","  ggplot() +"
-"0","  aes(x = week_ending, y = number_admissions, col = hscp) +"
-"0","  geom_line()"

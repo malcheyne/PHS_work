@@ -1,7 +1,0 @@
-"0","activity %>%  "
-"0","  filter(hb %in% ""Scotland"","
-"0","         admission_type %in% ""Elective Inpatients"") %>% "
-"0"," # group_by(episodes) %>% "
-"0","  ggplot(aes(x = quarter, y = episodes, col = specialty_name)) +"
-"0","  geom_point() +"
-"0","  geom_line()"

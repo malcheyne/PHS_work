@@ -20,43 +20,43 @@ head(raw_activity)
 ```
 
 ```{r}
-activity <- raw_activity %>% 
-  clean_names() %>% 
-  # Create new column for quarters
-  mutate(q = str_sub(quarter, -2)) %>% 
-  # Change to date format
-  mutate(quarter = yq(quarter)) %>% 
-  # rename the columns above 
-  mutate(date = quarter,
-         quarter = q) %>% 
-  # Change Heath Board names to read better
-  mutate(
-    hb = if_else(hb %in% "SB0801", "Golden Jubilee",
-                  if_else(hb %in% "S08000015", "Ayrshire & Arran",
-                  if_else(hb %in% "S08000016", "Borders",
-                  if_else(hb %in% "S08000017", "Dumfries & Galloway",
-                  if_else(hb %in% "S08000019", "Forth Valley",
-                  if_else(hb %in% "S08000020", "Grampian",
-                  if_else(hb %in% "S08000022", "Highland",
-                  if_else(hb %in% "S08000024", "Lothian",
-                  if_else(hb %in% "S08000025", "Orkney",
-                  if_else(hb %in% "S08000026", "Shetland",
-                  if_else(hb %in% "S08000028", "Western Isles",
-                  if_else(hb %in% "S08000029", "Fife",
-                  if_else(hb %in% "S08000030", "Tayside",
-                  if_else(hb %in% "S08000031", "Greater Glasgow & Clyde",
-                  if_else(hb %in% "S08000032", "Lanarkshire",
-                  if_else(hb %in% "S92000003", "Scotland", hb)
-                  )))))))))))))))) %>% 
-  # take out location names to take out duplicate
-  filter(location_qf == "d") %>% 
-  # take out unsed columns
-  select(date, quarter, hb, location, admission_type, 
-         specialty, specialty_name, episodes, 
-         length_of_episode, average_length_of_episode, 
-         spells, length_of_spell, average_length_of_spell)
-  
-activity 
+# activity <- raw_activity %>% 
+#   clean_names() %>% 
+#   # Create new column for quarters
+#   mutate(q = str_sub(quarter, -2)) %>% 
+#   # Change to date format
+#   mutate(quarter = yq(quarter)) %>% 
+#   # rename the columns above 
+#   mutate(date = quarter,
+#          quarter = q) %>% 
+#   # Change Heath Board names to read better
+#   mutate(
+#     hb = if_else(hb %in% "SB0801", "Golden Jubilee",
+#                   if_else(hb %in% "S08000015", "Ayrshire & Arran",
+#                   if_else(hb %in% "S08000016", "Borders",
+#                   if_else(hb %in% "S08000017", "Dumfries & Galloway",
+#                   if_else(hb %in% "S08000019", "Forth Valley",
+#                   if_else(hb %in% "S08000020", "Grampian",
+#                   if_else(hb %in% "S08000022", "Highland",
+#                   if_else(hb %in% "S08000024", "Lothian",
+#                   if_else(hb %in% "S08000025", "Orkney",
+#                   if_else(hb %in% "S08000026", "Shetland",
+#                   if_else(hb %in% "S08000028", "Western Isles",
+#                   if_else(hb %in% "S08000029", "Fife",
+#                   if_else(hb %in% "S08000030", "Tayside",
+#                   if_else(hb %in% "S08000031", "Greater Glasgow & Clyde",
+#                   if_else(hb %in% "S08000032", "Lanarkshire",
+#                   if_else(hb %in% "S92000003", "Scotland", hb)
+#                   )))))))))))))))) %>% 
+#   # take out location names to take out duplicate
+#   filter(location_qf == "d") %>% 
+#   # take out unsed columns
+#   select(date, quarter, hb, admission_type, 
+#          specialty, specialty_name, episodes, 
+#          length_of_episode, average_length_of_episode, 
+#          spells, length_of_spell, average_length_of_spell)
+#   
+# activity 
 ```
 
 
@@ -72,8 +72,7 @@ activity_no_gj <- raw_activity %>%
          quarter = q) %>% 
   # Change Heath Board names to read better
   mutate(
-    hb = 
-                  if_else(hb %in% "S08000015", "Ayrshire & Arran",
+    hb = if_else(hb %in% "S08000015", "Ayrshire & Arran",
                   if_else(hb %in% "S08000016", "Borders",
                   if_else(hb %in% "S08000017", "Dumfries & Galloway",
                   if_else(hb %in% "S08000019", "Forth Valley",
@@ -94,7 +93,7 @@ activity_no_gj <- raw_activity %>%
   # take out Golden Jubilee
   filter(hb != is.na(hb)) %>%
   # take out unsed columns
-  select(date, quarter, hb, location, admission_type, 
+  select(date, quarter, hb, admission_type, 
          specialty, specialty_name, episodes, 
          length_of_episode, average_length_of_episode, 
          spells, length_of_spell, average_length_of_spell)
@@ -104,65 +103,65 @@ activity_no_gj
 
 
 ```{r}
-activity2 <- raw_activity %>% 
-  clean_names() %>% 
-  # Create new column for quarters
-  mutate(q = str_sub(quarter, -2)) %>% 
-  # Change to date format
-  mutate(quarter = yq(quarter)) %>% 
-  # rename the columns above 
-  mutate(date = quarter,
-         quarter = q) %>% 
-  # Change Heath Board names to read better
-    # probly don't need
-  mutate(
-    hb = if_else(hb %in% "SB0801", "Golden Jubilee",
-                  if_else(hb %in% "S08000015", "Ayrshire & Arran",
-                  if_else(hb %in% "S08000016", "Borders",
-                  if_else(hb %in% "S08000017", "Dumfries & Galloway",
-                  if_else(hb %in% "S08000019", "Forth Valley",
-                  if_else(hb %in% "S08000020", "Grampian",
-                  if_else(hb %in% "S08000022", "Highland",
-                  if_else(hb %in% "S08000024", "Lothian",
-                  if_else(hb %in% "S08000025", "Orkney",
-                  if_else(hb %in% "S08000026", "Shetland",
-                  if_else(hb %in% "S08000028", "Western Isles",
-                  if_else(hb %in% "S08000029", "Fife",
-                  if_else(hb %in% "S08000030", "Tayside",
-                  if_else(hb %in% "S08000031", "Greater Glasgow & Clyde",
-                  if_else(hb %in% "S08000032", "Lanarkshire",
-                  if_else(hb %in% "S92000003", "Scotland", hb)
-                  )))))))))))))))) %>% 
-  # Change location names to take out dupitice
-  mutate(
-    location = if_else(location %in% "SB0801", "Golden Jubilee",
-                  if_else(location %in% "S08000015", "Ayrshire & Arran",
-                  if_else(location %in% "S08000016", "Borders",
-                  if_else(location %in% "S08000017", "Dumfries & Galloway",
-                  if_else(location %in% "S08000019", "Forth Valley",
-                  if_else(location %in% "S08000020", "Grampian",
-                  if_else(location %in% "S08000022", "Highland",
-                  if_else(location %in% "S08000024", "Lothian",
-                  if_else(location %in% "S08000025", "Orkney",
-                  if_else(location %in% "S08000026", "Shetland",
-                  if_else(location %in% "S08000028", "Western Isles",
-                  if_else(location %in% "S08000029", "Fife",
-                  if_else(location %in% "S08000030", "Tayside",
-                  if_else(location %in% "S08000031", "Greater Glasgow & Clyde",
-                  if_else(location %in% "S08000032", "Lanarkshire",
-                  if_else(location %in% "S92000003", "Scotland", NA_character_ 
-                        #  if_else(location %in% "^[A-Z0-9]{5}", , location)
-                        # couldn't get the Regex to work 
-                  ))))))))))))))))) %>% 
-  # filter out the na
-  filter(location != is.na(location)) %>% 
-  # take out unsed columns
-  select(date, quarter, hb, location, admission_type, 
-         specialty, specialty_name, episodes, 
-         length_of_episode, average_length_of_episode, 
-         spells, length_of_spell, average_length_of_spell)
-  
-activity2 
+# activity2 <- raw_activity %>% 
+#   clean_names() %>% 
+#   # Create new column for quarters
+#   mutate(q = str_sub(quarter, -2)) %>% 
+#   # Change to date format
+#   mutate(quarter = yq(quarter)) %>% 
+#   # rename the columns above 
+#   mutate(date = quarter,
+#          quarter = q) %>% 
+#   # Change Heath Board names to read better
+#     # probly don't need
+#   mutate(
+#     hb = if_else(hb %in% "SB0801", "Golden Jubilee",
+#                   if_else(hb %in% "S08000015", "Ayrshire & Arran",
+#                   if_else(hb %in% "S08000016", "Borders",
+#                   if_else(hb %in% "S08000017", "Dumfries & Galloway",
+#                   if_else(hb %in% "S08000019", "Forth Valley",
+#                   if_else(hb %in% "S08000020", "Grampian",
+#                   if_else(hb %in% "S08000022", "Highland",
+#                   if_else(hb %in% "S08000024", "Lothian",
+#                   if_else(hb %in% "S08000025", "Orkney",
+#                   if_else(hb %in% "S08000026", "Shetland",
+#                   if_else(hb %in% "S08000028", "Western Isles",
+#                   if_else(hb %in% "S08000029", "Fife",
+#                   if_else(hb %in% "S08000030", "Tayside",
+#                   if_else(hb %in% "S08000031", "Greater Glasgow & Clyde",
+#                   if_else(hb %in% "S08000032", "Lanarkshire",
+#                   if_else(hb %in% "S92000003", "Scotland", hb)
+#                   )))))))))))))))) %>% 
+#   # Change location names to take out dupitice
+#   mutate(
+#     location = if_else(location %in% "SB0801", "Golden Jubilee",
+#                   if_else(location %in% "S08000015", "Ayrshire & Arran",
+#                   if_else(location %in% "S08000016", "Borders",
+#                   if_else(location %in% "S08000017", "Dumfries & Galloway",
+#                   if_else(location %in% "S08000019", "Forth Valley",
+#                   if_else(location %in% "S08000020", "Grampian",
+#                   if_else(location %in% "S08000022", "Highland",
+#                   if_else(location %in% "S08000024", "Lothian",
+#                   if_else(location %in% "S08000025", "Orkney",
+#                   if_else(location %in% "S08000026", "Shetland",
+#                   if_else(location %in% "S08000028", "Western Isles",
+#                   if_else(location %in% "S08000029", "Fife",
+#                   if_else(location %in% "S08000030", "Tayside",
+#                   if_else(location %in% "S08000031", "Greater Glasgow & Clyde",
+#                   if_else(location %in% "S08000032", "Lanarkshire",
+#                   if_else(location %in% "S92000003", "Scotland", NA_character_ 
+#                         #  if_else(location %in% "^[A-Z0-9]{5}", , location)
+#                         # couldn't get the Regex to work 
+#                   ))))))))))))))))) %>% 
+#   # filter out the na
+#   filter(location != is.na(location)) %>% 
+#   # take out unsed columns
+#   select(date, quarter, hb, admission_type, 
+#          specialty, specialty_name, episodes, 
+#          length_of_episode, average_length_of_episode, 
+#          spells, length_of_spell, average_length_of_spell)
+#   
+# activity2 
 ```
 
 ```{r}
@@ -177,48 +176,19 @@ comparison$tM
 ```
 
 
-```{r}
+Can use this in shiny just filter it down by specialty
 
-```
-
-
-```{r}
-activity %>% 
-  count(admission_type)
-```
-```{r}
-activity_no_gj%>% 
-  count(admission_type)
-```
-
+Can have both elective or emergency admissions show between the two graphs 
 
 ```{r}
-activity %>% 
-  filter(admission_type %in% "Emergency Inpatients") %>% 
-  count(specialty_name)
-```
-
-```{r}
-activity %>% 
-  filter(admission_type %in% "Elective Inpatients") %>% 
-  count(specialty_name)
-```
-
-
-
-
-```{r}
-
 activity_no_gj %>%  
   filter(hb %in% "Scotland",
-         admission_type %in% "Emergency Inpatients",
-         episodes > 3000) %>% 
- # group_by(episodes) %>% 
+         admission_type %in% "Emergency Inpatients") %>% 
   ggplot(aes(x = date, y = episodes, col = specialty_name)) +
   geom_point() +
   geom_line()
 ```
-Across scotland looks like we had a steddy incress in the General Medicine
+
 ```{r}
 activity_no_gj %>%  
   filter(hb %in% "Scotland",
@@ -254,7 +224,7 @@ activity_no_gj %>%
   geom_line()
 ```
 
-take out "All Inpatients and Day cases" & "Not Specified" as duplicating and not really any there       
+       
 
 ### Admission by specialty
 
@@ -264,6 +234,9 @@ Better can shiny this one and pick the specialty_name
 
 ### KPI: The whole system: from what’s coming through the front door in A&E and then how it filters through; how many emergency admissions are there, how many electives, how does this impact the lengths of stay people have in hospital?
 
+take out "All Inpatients and Day cases" & "Not Specified" as duplicating and not really any there
+
+##### Episodes by Admission
 ```{r}
 activity_no_gj %>%  
   filter(hb %in% "Scotland",
@@ -276,7 +249,7 @@ activity_no_gj %>%
   geom_line()
 ```
 
-
+##### Spells by Admission
 ```{r}
 activity_no_gj %>%  
   filter(hb %in% "Scotland",
@@ -321,15 +294,22 @@ bigest_type <- activity_no_gj %>%
   group_by(specialty_name) %>% 
   summarise(count = sum(episodes)) %>% 
   arrange(desc(count)) %>% 
-  head(1)
+  head(3) %>% 
+  ungroup()
 
 bigest_type
 ```
+
+
+
 ```{r}
+
+`%!in%` <- negate(`%in%`)
+
 activity_no_gj %>% 
   filter(hb %in% "Scotland",
          admission_type %in% "Emergency Inpatients",
-         specialty_name != bigest_type$specialty_name) %>%
+         specialty_name %!in% c(bigest_type$specialty_name)) %>%
   group_by(specialty_name) %>% 
   summarise(count = sum(episodes)) %>% 
   arrange(desc(count)) 
@@ -342,7 +322,7 @@ activity_no_gj %>%
 avg_specialty <- activity_no_gj %>% 
   filter(hb %in% "Scotland",
          admission_type %in% "Emergency Inpatients",
-         specialty_name != bigest_type$specialty_name) %>%
+         specialty_name %!in% c(bigest_type$specialty_name)) %>%
   group_by(date) %>% 
   summarise(avg = mean(episodes)) 
 
@@ -357,10 +337,15 @@ activity_no_gj %>%
          specialty_name == bigest_type$specialty_name) %>%
   ggplot(aes(x = date, y = episodes)) +
   geom_point() +
-  geom_line(col = "black") +
+  geom_line(aes(col = specialty_name)) +
   #geom_point(aes(x = avg_specialty$date, y = avg_specialty$avg, col = "red")) +
-  geom_line(aes(x = avg_specialty$date, y = avg_specialty$avg, col = "red"), size = 1.5)
+  geom_line(aes(x = avg_specialty$date, y = avg_specialty$avg), col = "red", size = 1.5)
 ```
+
+
+
+
+
 
 
 ```{r}
