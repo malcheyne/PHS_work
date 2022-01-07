@@ -56,6 +56,13 @@ wranged_beds_no_gj <- raw_beds %>%
 wranged_beds_no_gj
 ```
 
+
+
+```{r}
+unique(wranged_beds_no_gj$hb)
+```
+
+
 ### KPI: Capacity – what is happening to the number of beds over the period? Perhaps think about the specialities these are if there has been specific variation?
 
 
@@ -166,11 +173,30 @@ wranged_beds_no_gj %>%
 ```{r}
 wranged_beds_no_gj %>% 
   filter(specialty_name %in% c("All Acute", "All Specialties"),
-         hb %in% "Scotland") %>% 
-  ggplot(aes(x = date, y = all_staffed_beds, col = specialty_name)) +
+         hb %in% "Scotland") %>%  
+  ggplot(aes(x = date, y = average_occupied_beds, col = specialty_name)) +
+  # geom_col(position = "dodge")
   geom_point() +
   geom_line()
 ```
+
+```{r}
+avg_beds <- wranged_beds_no_gj %>% 
+  filter(specialty_name %in% c("All Acute", "All Specialties"),
+         hb %in% "Scotland") %>%
+  group_by(date) %>% 
+  summarise(avg = mean(average_occupied_beds)) 
+
+  wranged_beds_no_gj %>% 
+  filter(specialty_name %in% c("All Acute", "All Specialties"),
+       hb %in% "Scotland") %>%
+  ggplot(aes(x = date, y = average_occupied_beds, col = specialty_name)) +
+  # geom_col(position = "dodge")
+  geom_point() +
+  geom_line() +
+  geom_line(aes(x = avg_beds$date, y = avg_beds$avg), col = "red", size = 1.5)
+```
+
 
 Shows the regions brake down 
 Glasgow is the hub for most types of beds
@@ -201,6 +227,10 @@ wranged_beds_no_gj %>%
 
 ```{r}
 raw_activity <- read_csv("data/inpatient_and_daycase_by_nhs_board_of_treatment_and_specialty.csv")
+```
+```{r}
+raw_activity %>% 
+  filter(HB %in% "S08000018")
 ```
 
 
@@ -248,6 +278,9 @@ activity_no_gj <- raw_activity %>%
   
 activity_no_gj 
 ```
+```{r}
+unique(activity_no_gj$specialty_name)
+```
 
 
 Can use this in shiny just filter it down by specialty
@@ -255,9 +288,19 @@ Can use this in shiny just filter it down by specialty
 Can have both elective or emergency admissions show between the two graphs 
 
 ```{r}
+unique(activity_no_gj$specialty_name)
+```
+
+
+```{r}
+`%!in%` <- negate(`%in%`)
+
 activity_no_gj %>%  
   filter(hb %in% "Scotland",
-         admission_type %in% "Emergency Inpatients") %>% 
+         admission_type %in% "Emergency Inpatients",
+         specialty_name %!in% c("Clinical Genetics", 
+                                "Allergy", "Clinical Neurophysiology", 
+                                "Genito-Urinary Medicine")) %>% 
   ggplot(aes(x = date, y = episodes, col = specialty_name)) +
   geom_point() +
   geom_line()
@@ -267,7 +310,7 @@ activity_no_gj %>%
 activity_no_gj %>%  
   filter(hb %in% "Scotland",
          admission_type %in% "Emergency Inpatients",
-         specialty_name %in% "General Medicine") %>% 
+         specialty_name %in% "Allergy") %>% 
  # group_by(episodes) %>% 
   ggplot(aes(x = date, y = episodes, col = specialty_name)) +
   geom_point() +

@@ -33,10 +33,21 @@ activity_no_gj <- raw_activity %>%
                if_else(hb %in% "S08000030", "Tayside",
                if_else(hb %in% "S08000031", "Greater Glasgow & Clyde",
                if_else(hb %in% "S08000032", "Lanarkshire",
-               if_else(hb %in% "S92000003", "Scotland", hb)
+               if_else(hb %in% "S92000003", "Scotland", NA_character_)
                ))))))))))))))) %>% 
   # take out location names to take out duplicate
-  filter(location_qf == "d")  
+  filter(location_qf == "d") %>% 
+  filter(hb != is.na(hb))
+
+`%!in%` <- negate(`%in%`)
+
+# activity <- activity_no_gj %>% 
+#   filter(specialty_name %in% c("General Medicine", 
+#                                "Cardiology", "Infectious Diseases", 
+#                                "Intensive Care Medicine")
+#          )
+
+
 
 ui <- fluidPage(
   
@@ -67,7 +78,7 @@ ui <- fluidPage(
                   value = c(as.Date("2016-01-01"),
                             as.Date("2021-12-31")),
                   timeFormat="%Y-%m",
-                  step = 91.25, ticks = TRUE
+                  step = 91.25, ticks = FALSE
       ),
       
       # ACTION BUTTON
@@ -99,16 +110,10 @@ server <- function(input, output) {
   })
   
   output$specialty_episodes_plot <- renderPlot({
+    validate(
+      need(nrow(action_but()) > 0, "No Data for this Health Borad")
+    )
     action_but() %>% 
-      # filter(specialty_name %in% input$specialty_input,
-      #        hb %in% input$hb_input,
-      #        admission_type %in% c("Elective Inpatients", 
-      #                              "Emergency Inpatients", 
-      #                              "Transfers")
-      #        # ,
-      #        # date %in% between(date, input$coivd_date_range[1], 
-      #        #                 input$coivd_date_range[2])
-      #        ) %>% 
       ggplot(aes(x = date, y = episodes, col = admission_type)) +
       geom_point() +
       geom_line()
