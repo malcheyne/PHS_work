@@ -1,15 +1,22 @@
 ---
 title: "Stats Notebook"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
+## 2.6. Statistical analyses to identify patterns, trends and relationships in the dataset
+
+## 2.7. Interpreting the results of statistical analysis
+
 ```{r include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(tidyverse)
 library(janitor)
 library(infer)
 library(lubridate)
 ```
-
+<br>
 ### Data preparation
 ```{r}
 clean_beds <- read_csv("data/beds_by_nhs_board_of_treatment_and_specialty.csv") %>%
@@ -44,7 +51,7 @@ clean_beds <- read_csv("data/beds_by_nhs_board_of_treatment_and_specialty.csv") 
 
 clean_beds
 ```
-
+<br>
 ### Calculate mean percentage occupancy across Scotland for winter (Q1, Q4) and summer (Q2, Q3) months.
 ```{r}
 wint_av <- clean_beds %>%
@@ -64,7 +71,7 @@ wint_av
 summer_av
 obs_stat
 ```
-
+<br>
 ### Confidence intervals
 
 Let us visualise the confidence intervals if we bootsrap the average values of occupancy for winter and summer.
@@ -99,7 +106,7 @@ occupancy_resample %>%
   visualise(bins = 30) +
   shade_confidence_interval(endpoints = occupancy_ci)
 ```
-
+<br>
 ### Hypothesis: bed occupancy is greater in winter.
 
 The difference in average occupancy between winter and summer seems statistically significant. Let us generate a null distribution via permutation. $H_0$ is that the difference in average occupancy is **not** statistically significant. Assume that $\alpha = 0.05$ i.e. we will take the result as showing that the difference is statistically significant if the found $p$ value is smaller than $\alpha$.
@@ -133,7 +140,7 @@ clean_ae <- read_csv("data/ane_activity.csv") %>% clean_names() %>%
          year = year(date),
          month = month(date))
 ```
-
+<br>
 
 Let us look at the number of people waiting in A&E for longer than 8 hours.
 ```{r}
@@ -161,7 +168,7 @@ ae_stats <- clean_ae %>%
 
 ae_stats
 ```
-
+<br>
 ### Exploratory analysis
 It seems that average A&E attendance is greater in the winter. It also seems that it is increasing.
 
@@ -175,6 +182,7 @@ ae_stats %>%
   geom_col() +
   xlim(2008, 2021)
 ```
+<br>
 The amount of people that wait in A&E longer than 8 hrs is greater every winter compared to the respective summer.
 
 
